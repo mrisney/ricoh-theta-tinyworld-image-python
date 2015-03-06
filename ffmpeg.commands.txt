@@ -1,0 +1,4 @@
+ffmpeg -i "venice.mp4"  -an -f image2 "img_%05d.png"
+
+export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
+
