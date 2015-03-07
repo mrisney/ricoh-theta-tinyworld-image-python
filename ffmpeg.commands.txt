@@ -12,18 +12,23 @@ parameters are
 -i      : input, is the .mp4 or media ifile 
 -an     : turn off the audio **
 -r      : FPS, the Ricoh Theta records at 15 PFS, you could do lower but the argument is a division, so 3 = 15/3 = 5
--F    : force the decoding
+-f      : force the decoding
 image 2 : The "%05d" means sequence will have names with 5 digits, img_00001.png, img_00002.png etc.
 
 
-to encode, its a reversale of the image sequence in the current directory of image sequences: 
+to encode, it's a reversale of the image sequence in the current directory of image sequences: 
 
-ffmpeg -i img_%05d.png -r 15 -c:v libx264 -pix_fmt yuv420p -an out.mp4
+ffmpeg -i img_%05d.png -r 15 -vcodec libx264 -pix_fmt yuv420p -an out.mp4
 
 parameters are
 -i       : is the input file 
 -r       : FPS, Again this is just to match the Ricoh Theta recording time at 15 PFS
--c:v     :
--pix_fmt : The "%05d" means sequence will have names with 5 digits, img_00001.png, img_00002.png etc.
+-vcodec  : codec version H.264 video using the encoder x264
+-pix_fmt :  pixel format, this may or may not be nessecary, I add this so that QuickTime can play the video that was encoded
+-an      : turns off audio recording
+
+if you wanted to join the audio that was seperated from the decoding with FFmpeg's installed codecs:
+
+ffmpeg -i output.aac -i out.mp4 -c:v copy -c:a copy -bsf:a aac_adtstoasc out_complete.mp4
 
 
