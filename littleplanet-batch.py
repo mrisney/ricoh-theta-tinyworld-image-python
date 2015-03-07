@@ -3,15 +3,6 @@ import numpy as np
 from PIL import Image,ImageEnhance
 from skimage.transform import warp
 import glob
-from pprint import pprint
-
-
-
-def scale_by_5_and_offset(coords):
-    out = coords * 5
-    out[:,0] += 1000
-    out[:,1] += 300
-    return out
 
 
 def output_coord_to_r_theta(coords):
@@ -74,37 +65,8 @@ def r_theta_to_input_coords(r_theta):
     # Return the x- and y-co-ordinates stacked into a single Nx2 array
 	return np.hstack((xs, ys))
 
-def little_planet_1(coords):
-	"""Chain our two mapping functions together."""
-	r_theta = output_coord_to_r_theta(coords)
-	input_coords = r_theta_to_input_coords(r_theta)
-	return input_coords
 
-def little_planet_2(coords):
-    """Chain our two mapping functions together with modified r."""
-    r_theta = output_coord_to_r_theta(coords)
-    # Take square root of r
-    r_theta[:,0] = np.sqrt(r_theta[:,0])
-    input_coords = r_theta_to_input_coords(r_theta)
-    return input_coords
-
-def little_planet_3(coords):
-    """Chain our two mapping functions together with modified r
-    and shifted theta.
-    
-    """
-    r_theta = output_coord_to_r_theta(coords)
-    
-    # Take square root of r
-    r_theta[:,0] = np.sqrt(r_theta[:,0])
-    
-    # Shift theta
-    r_theta[:,1] += 0.1
-    
-    input_coords = r_theta_to_input_coords(r_theta)
-    return input_coords
-
-def little_planet_4(coords):
+def little_planet(coords):
     """Chain our two mapping functions together with modified and
     scaled r and shifted theta.
     
@@ -125,10 +87,9 @@ def little_planet_4(coords):
 
 
 def sharpen(image, sharpness=1.6):
-    """
-    Returns a sharpened copy of an image. 
-    
-    Resizing down or thumbnailing your images with PIL.Image tends to make them blurry. I apply this snippet to such images in order to regain some sharpness.
+    """Returns a sharpened copy of an image. 
+    Resizing down or thumbnailing your images with PIL.Image tends to make them blurry. 
+    I apply this snippet to such images in order to regain some sharpness.
     """
     sharpener = ImageEnhance.Sharpness(image)
     sharpened_image = sharpener.enhance(sharpness)
@@ -149,7 +110,7 @@ for path in glob.glob(input_directory):
     input_shape = pano.shape
 
     # Compute final warped image
-    pano_warp = warp(pano, little_planet_4, output_shape=output_shape)
+    pano_warp = warp(pano, little_planet, output_shape=output_shape)
 
     # The image is a NxMx3 array of floating point values from 0 to 1. Convert this to
     # bytes from 0 to 255 for saving the image:
