@@ -1,4 +1,29 @@
+These command will force the .mp4 video to a series of images, using the ffmpeg tool
+https://www.ffmpeg.org/ffmpeg.html
+
+to decode the mp4 file the following command witll split into a series of image sequences
 ffmpeg -i "venice.mp4"  -an -f image2 "img_%05d.png"
 
-export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
+-- if you want the sound from Ricoh Theta you could decode twice and only ouput the audio :
+ffmpeg -i "venice.mp4" -vn -acodec copy output.aac
+
+parameters are
+
+-i      : input, is the .mp4 or media ifile 
+-an     : turn off the audio **
+-r      : FPS, the Ricoh Theta records at 15 PFS, you could do lower but the argument is a division, so 3 = 15/3 = 5
+-F    : force the decoding
+image 2 : The "%05d" means sequence will have names with 5 digits, img_00001.png, img_00002.png etc.
+
+
+to encode, its a reversale of the image sequence in the current directory of image sequences: 
+
+ffmpeg -i img_%05d.png -r 15 -c:v libx264 -pix_fmt yuv420p -an out.mp4
+
+parameters are
+-i       : is the input file 
+-r       : FPS, Again this is just to match the Ricoh Theta recording time at 15 PFS
+-c:v     :
+-pix_fmt : The "%05d" means sequence will have names with 5 digits, img_00001.png, img_00002.png etc.
+
 
